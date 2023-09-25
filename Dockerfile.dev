@@ -1,13 +1,10 @@
 FROM node:latest
-FROM oven/bun
-
+# FROM oven/bun
 
 WORKDIR /usr/app
 
 COPY package*.json ./
 
-RUN bun install --force
-RUN bun i @next/swc-linux-arm64-gnu --dev --save
-RUN bun i @next/swc-linux-arm64-musl --dev --save
+RUN npm install --force
 
 COPY . .
