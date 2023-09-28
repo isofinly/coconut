@@ -1,5 +1,12 @@
 import './globals.css'
 
+
+export const metadata = {
+  title: "Coconut AI Assistant",
+  description: "-",
+};
+
+
 export default function RootLayout({
   children,
 }: {
