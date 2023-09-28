@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -59,8 +58,8 @@ func ExampleScrape() ScrapedData {
 	return data
 }
 
-func main() {
-	data := ExampleScrape()
-	fmt.Printf("%v\n", data)
-	// ExampleScrape()
-}
+// func parserMain() {
+// 	data := ExampleScrape()
+// 	fmt.Printf("%v\n", data)
+// 	// ExampleScrape()
+// }

@@ -6,5 +6,8 @@ WORKDIR /usr/app
 COPY package*.json ./
 
 RUN npm install --force
+# FIXME: WTF. We are using bun. Why do we need this?
+# RUN bun install
+# RUN bun install
 
 COPY . .
