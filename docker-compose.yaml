@@ -1,18 +1,12 @@
-version: '3.8'
-
-# FIX THIS FILE TOO
 services:
   nextjs-docker:
-    environment:
-      - NODE_ENV=development
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./:/usr/app
+    build: ./frontend
     container_name: nextjs-docker
-    expose:
-      - '3000'
     ports:
       - '3000:3000'
-    command: ['npm', 'run', 'dev']
+    command: ['bun', 'run', 'dev']
+  golang-backend:
+    build: ./backend
+    container_name: golang-backend
+    ports:
+      - '3030:3030'
