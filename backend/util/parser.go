@@ -1,6 +1,8 @@
-package main
+package util
 
 import (
+	// "encoding/json"
+
 	"log"
 	"net/http"
 	"strings"
@@ -16,24 +18,40 @@ type ScrapedData struct {
 	P  []string
 }
 
-func ExampleScrape() ScrapedData {
-	// Request the HTML page.
-	res, err := http.Get("http://metalsucks.net")
+type JSONResponse struct {
+	H1 []string `json:"h1"`
+	H2 []string `json:"h2"`
+	H3 []string `json:"h3"`
+	A  []string `json:"a"`
+	P  []string `json:"p"`
+}
+
+// TODO: 
+// Proper error handling to prevent server from exit(1);
+// rewrite doc.Find to one doc.Find("h1", "h2", "h3", "a", "p") with proper field identification
+
+// <meta> parse ???
+
+func ExampleScrape(url string) JSONResponse  {
+
+	res, err := http.Get(url)
+
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer res.Body.Close()
+
 	if res.StatusCode != 200 {
 		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
 	}
 
-	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(res.Body)
+
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Find the required elements
+	
 	var data ScrapedData
 	doc.Find("h1").Each(func(i int, s *goquery.Selection) {
 		text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
@@ -55,11 +73,15 @@ func ExampleScrape() ScrapedData {
 		text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
 		data.A = append(data.A, text)
 	})
-	return data
+
+	jsonData := JSONResponse{
+		H1: data.H1,
+		H2: data.H2,
+		H3: data.H3,
+		A:  data.A,
+		P:  data.P,
+	}
+
+	return jsonData
 }
 
-// func parserMain() {
-// 	data := ExampleScrape()
-// 	fmt.Printf("%v\n", data)
-// 	// ExampleScrape()
-// }
