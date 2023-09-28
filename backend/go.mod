@@ -1,4 +1,4 @@
-module coconut
+module github.com/isofinly/coconut
 
 go 1.21.1
 
