@@ -1,5 +1,5 @@
 services:
-  trends-api:
+  scrapper-api:
     build: ./scrapper-api
     container_name: scrapper-api
     ports:
