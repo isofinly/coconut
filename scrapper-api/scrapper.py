@@ -4,14 +4,15 @@ from bs4 import BeautifulSoup
 from langdetect import detect
 from urllib.parse import urlparse, urljoin
 from typing import Dict, List, Optional, Tuple, Set
+import concurrent.futures
 
 # Disable insecure request warning
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-FILE_EXTENSIONS = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt',
-                   '.pptx', '.zip', '.rar', '.jpg', '.jpeg', '.png', '.gif', '.rar']
+FILE_EXTENSIONS = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.zip', '.rar', '.jpg', '.jpeg', '.png', '.gif', '.rar']
+
 
 MODELS: Dict[str, spacy.Language] = {}
 
@@ -75,13 +76,7 @@ def is_internal_link(base_url: str, link: str) -> bool:
     base_url_parsed = urlparse(base_url)
     link_parsed = urlparse(link)
 
-    if link_parsed.netloc == base_url_parsed.netloc:
-        return True
-
-    if link.startswith("/") and not any(link.endswith(ext) for ext in FILE_EXTENSIONS):
-        return True
-
-    return False
+    return link_parsed.netloc == base_url_parsed.netloc or (link.startswith("/") and not any(link.endswith(ext) for ext in FILE_EXTENSIONS))
 
 
 def get_site_pages(url: str) -> Set[str]:
@@ -103,10 +98,16 @@ def get_site_pages(url: str) -> Set[str]:
 
     base_url = response.url
 
-    page_urls = {urljoin(base_url, link.get('href'))
-                 for link in links if is_internal_link(base_url, link.get('href'))}
-    return page_urls
+    # Define a function to check if a link is internal and construct the full URL
+    def process_link(link):
+        if is_internal_link(base_url, link.get('href')):
+            return urljoin(base_url, link.get('href'))
 
+    # Use ThreadPoolExecutor to process links concurrently
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        page_urls = set(executor.map(process_link, links))
+
+    return page_urls
 
 def clean_text(text: str) -> str:
     """
@@ -140,14 +141,19 @@ def extract_paragraphs(url: str) -> List[str]:
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    for paragraph in soup.find_all('p'):
+    # Define a function to extract and clean paragraphs
+    def process_paragraph(paragraph):
         cleaned_paragraph = clean_text(paragraph.get_text()).split('\n')
-        for paragraph in cleaned_paragraph:
-            if paragraph:
-                page_paragraphs.append(paragraph)
+        return [p for p in cleaned_paragraph if p]
+
+    # Use ThreadPoolExecutor to process paragraphs concurrently
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        paragraphs_lists = list(executor.map(process_paragraph, soup.find_all('p')))
+
+    # Flatten the list of lists into a single list of paragraphs
+    page_paragraphs = [p for sublist in paragraphs_lists for p in sublist]
 
     return page_paragraphs
-
 
 
 def extract_metadata(url: str) -> Dict[str, Optional[str]]:
@@ -160,21 +166,21 @@ def extract_metadata(url: str) -> Dict[str, Optional[str]]:
     Returns:
         Dict[str, Optional[str]]: A dictionary containing the extracted metadata.
     """
-    try:
-        response = requests.get(url, verify=False)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.content, 'html.parser')
+    response = requests.get(url, verify=False)
+    soup = BeautifulSoup(response.content, 'html.parser')
 
         # Extract metadata information
-        metadata = {
-            'title': soup.title.string.strip() if soup.title else None,
-            'description': soup.find('meta', attrs={'name': 'description'})['content'].strip() if soup.find('meta', attrs={'name': 'description'}) else None,
-            'keywords': soup.find('meta', attrs={'name': 'keywords'})['content'].strip() if soup.find('meta', attrs={'name': 'keywords'}) else None,
-            # Add more metadata fields as needed
+    metadata = {
+        'title': soup.title.string.strip() if soup.title else None,
+        'description': soup.find('meta', attrs={'name': 'description'})['content'].strip() if soup.find('meta', attrs={'name': 'description'}) else None,
+        'keywords': soup.find('meta', attrs={'name': 'keywords'})['content'].strip() if soup.find('meta', attrs={'name': 'keywords'}) else None,
+        # Add more metadata fields as needed
         }
-        return metadata
-    except (requests.RequestException, KeyError):
-        return {}
+    
+    if metadata['description'] and not metadata['keywords']:
+        metadata['keywords'] = extract_keywords_multilang(metadata['description'])[2]
+    return metadata
+
 
 
 # if __name__ == "__main__":

@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, Response
 from typing import Any, Dict, List
+import concurrent.futures
+
 
 from scrapper import extract_keywords_multilang, extract_metadata, extract_paragraphs, get_domain, get_site_pages, load_models
 
@@ -109,6 +111,38 @@ def extract_metadata_handler() -> Dict[str, Any]:
     metadata: Dict[str, Any] = extract_metadata(url)
     return jsonify(metadata)
 
+@app.route('/extract_metadata_batch', methods=['POST'])
+def extract_metadata_batch_handler():
+    if request.method == 'POST':
+        data = request.json
+        site_url = data.get('url', '')
+        n = data.get('n', 5)  # Default to extracting metadata for 5 URLs
+        page_urls = list(get_site_pages(site_url))[:n]
+
+        metadata_list = []
+
+        # Define a function to extract metadata for a single URL
+        def extract_metadata_for_url(url):
+            metadata = extract_metadata(url)
+            return {'url': url, 'metadata': metadata}
+
+        # Use ThreadPoolExecutor to execute the extraction concurrently
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            # Submit tasks for each URL
+            future_to_url = {executor.submit(extract_metadata_for_url, url): url for url in page_urls}
+
+            # Collect results as they complete
+            for future in concurrent.futures.as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    result = future.result()
+                    metadata_list.append(result)
+                except Exception as e:
+                    # Handle exceptions for individual URLs here
+                    print(f"Error processing URL {url}: {str(e)}")
+
+        return jsonify(metadata_list)
+    
 
 if __name__ == "__main__":
-    app.run(port=5001, debug=True, host='0.0.0.0')
+    app.run(port=5001, host='0.0.0.0')
