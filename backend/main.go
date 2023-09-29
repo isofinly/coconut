@@ -6,10 +6,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
+	"github.com/goccy/go-json"
 	"github.com/isofinly/coconut/util"
 )
-
-import "github.com/goccy/go-json"
 
 func main() {
 	app := fiber.New(fiber.Config{

@@ -1,0 +1,44 @@
+[
+  {
+      "id": 0,
+      "title": "Blockchain.com",
+      "type": "Topic",
+      "interest": 100
+  },
+  {
+      "id": 1,
+      "title": "Bitcoin",
+      "type": "Currency",
+      "interest": 9
+  },
+  {
+      "id": 2,
+      "title": "Technology",
+      "type": "Topic",
+      "interest": 5
+  },
+  {
+      "id": 3,
+      "title": "Cryptocurrency",
+      "type": "Topic",
+      "interest": 3
+  },
+  {
+      "id": 4,
+      "title": "Financial transaction",
+      "type": "Topic",
+      "interest": 3
+  },
+  {
+      "id": 5,
+      "title": "Wallet",
+      "type": "Topic",
+      "interest": 2
+  },
+  {
+      "id": 6,
+      "title": "Software Developer",
+      "type": "Career",
+      "interest": 2
+  }
+]

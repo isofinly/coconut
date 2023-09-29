@@ -11,14 +11,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type ScrapedData struct {
-	H1 []string
-	H2 []string
-	H3 []string
-	A  []string
-	P  []string
-}
-
 type JSONResponse struct {
 	H1 []string `json:"h1"`
 	H2 []string `json:"h2"`
@@ -28,9 +20,6 @@ type JSONResponse struct {
 }
 
 // TODO:
-// Proper error handling to prevent server from exit(1);
-// rewrite doc.Find to one doc.Find("h1", "h2", "h3", "a", "p") with proper field identification
-
 // <meta> parse ???
 
 func ExampleScrape(url string) (JSONResponse, error) {
@@ -52,7 +41,7 @@ func ExampleScrape(url string) (JSONResponse, error) {
 		return JSONResponse{}, err
 	}
 
-	var data ScrapedData
+	var data JSONResponse
 	var wg sync.WaitGroup
 
 	wg.Add(5)
