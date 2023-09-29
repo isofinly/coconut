@@ -1,0 +1,6 @@
+services:
+  trends-api:
+    build: ./scrapper-api
+    container_name: scrapper-api
+    ports:
+      - '5001:5001'
