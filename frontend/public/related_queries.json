@@ -1,0 +1,127 @@
+[
+    {
+        "id": 0,
+        "query": "blockchain info",
+        "interest": 100
+    },
+    {
+        "id": 1,
+        "query": "bitcoin",
+        "interest": 84
+    },
+    {
+        "id": 2,
+        "query": "bitcoin blockchain",
+        "interest": 84
+    },
+    {
+        "id": 3,
+        "query": "blockchain wallet",
+        "interest": 71
+    },
+    {
+        "id": 4,
+        "query": "биткоин",
+        "interest": 58
+    },
+    {
+        "id": 5,
+        "query": "blockchain explorer",
+        "interest": 57
+    },
+    {
+        "id": 6,
+        "query": "blockchain биткоин",
+        "interest": 57
+    },
+    {
+        "id": 7,
+        "query": "блокчейн",
+        "interest": 57
+    },
+    {
+        "id": 8,
+        "query": "blockchain кошелек",
+        "interest": 51
+    },
+    {
+        "id": 9,
+        "query": "blockchain это",
+        "interest": 44
+    },
+    {
+        "id": 10,
+        "query": "btc",
+        "interest": 39
+    },
+    {
+        "id": 11,
+        "query": "blockchain транзакции",
+        "interest": 35
+    },
+    {
+        "id": 12,
+        "query": "blockchain курс",
+        "interest": 34
+    },
+    {
+        "id": 13,
+        "query": "blockchain life",
+        "interest": 32
+    },
+    {
+        "id": 14,
+        "query": "ethereum blockchain",
+        "interest": 31
+    },
+    {
+        "id": 15,
+        "query": "ethereum",
+        "interest": 30
+    },
+    {
+        "id": 16,
+        "query": "blockchain technology",
+        "interest": 30
+    },
+    {
+        "id": 17,
+        "query": "bestchange",
+        "interest": 28
+    },
+    {
+        "id": 18,
+        "query": "blockchain отзывы",
+        "interest": 25
+    },
+    {
+        "id": 19,
+        "query": "binance",
+        "interest": 23
+    },
+    {
+        "id": 20,
+        "query": "blockchain перевод",
+        "interest": 21
+    },
+    {
+        "id": 21,
+        "query": "nft",
+        "interest": 19
+    },
+    {
+        "id": 22,
+        "query": "blockchain деньги",
+        "interest": 18
+    },
+    {
+        "id": 23,
+        "query": "blockchain games",
+        "interest": 18
+    },
+    {
+        "id": 24,
+        "query": "block",
+        "interest": 17
+    }
+]
