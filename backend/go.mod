@@ -2,7 +2,6 @@ module github.com/isofinly/coconut
 
 go 1.21.1
 
-require github.com/PuerkitoBio/goquery v1.8.1
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
@@ -15,12 +14,10 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.50.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 )
 
 require (
-	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/goccy/go-json v0.10.2
 	github.com/gofiber/fiber/v2 v2.49.2
 )

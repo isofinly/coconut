@@ -48,13 +48,19 @@ export default function Home() {
   const handleSubmit = async () => {
     try {
       const response = await axios.post("http://localhost:3030/", {
-        url: "https://" + inputUrl,
+        url: "https://" + getDomainName(inputUrl),
       });
       setData(response.data);
     } catch (error) {
       setData(null);
     }
   };
+
+  function getDomainName(url) {
+    let domain = url.replace(/^(https?:\/\/)?(www\.)?/i, '');
+    domain = domain.split('/')[0];
+    return domain;
+  }
 
   const [interestPage, setInterestPage] = React.useState(1); // Changed 'page' to 'interestPage'
   const rowsPerPage = 15;

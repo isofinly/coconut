@@ -1,13 +1,10 @@
 package main
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
 	"github.com/goccy/go-json"
-	"github.com/isofinly/coconut/util"
 )
 
 func main() {
@@ -33,18 +30,7 @@ func main() {
 			return err
 		}
 
-		result, err := util.ExampleScrape(reqBody.URL)
-		if err != nil {
-			log.Println(err)
-			return c.SendStatus(500)
-		}
-
-		jsonResponse, err := json.Marshal(result)
-		if err != nil {
-			log.Println(err)
-		}
-
-		return c.SendString(string(jsonResponse))
+		return c.SendString("Hello world")
 	})
 
 	app.Listen(":3030")
