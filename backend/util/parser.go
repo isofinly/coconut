@@ -3,9 +3,10 @@ package util
 import (
 	// "encoding/json"
 
-	"log"
+	"fmt"
 	"net/http"
 	"strings"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -26,62 +27,75 @@ type JSONResponse struct {
 	P  []string `json:"p"`
 }
 
-// TODO: 
+// TODO:
 // Proper error handling to prevent server from exit(1);
 // rewrite doc.Find to one doc.Find("h1", "h2", "h3", "a", "p") with proper field identification
 
 // <meta> parse ???
 
-func ExampleScrape(url string) JSONResponse  {
+func ExampleScrape(url string) (JSONResponse, error) {
 
 	res, err := http.Get(url)
-
 	if err != nil {
-		log.Fatal(err)
+		return JSONResponse{}, err
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+		return JSONResponse{}, fmt.Errorf("status code error: %d %s", res.StatusCode, res.Status)
 	}
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 
 	if err != nil {
-		log.Fatal(err)
+		return JSONResponse{}, err
 	}
-	
+
 	var data ScrapedData
-	doc.Find("h1").Each(func(i int, s *goquery.Selection) {
-		text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
-		data.H1 = append(data.H1, text)
-	})
-	doc.Find("h2").Each(func(i int, s *goquery.Selection) {
-		text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
-		data.H2 = append(data.H2, text)
-	})
-	doc.Find("h3").Each(func(i int, s *goquery.Selection) {
-		text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
-		data.H2 = append(data.H3, text)
-	})
-	doc.Find("p").Each(func(i int, s *goquery.Selection) {
-		text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
-		data.P = append(data.P, text)
-	})
-	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
-		data.A = append(data.A, text)
-	})
+	var wg sync.WaitGroup
 
-	jsonData := JSONResponse{
-		H1: data.H1,
-		H2: data.H2,
-		H3: data.H3,
-		A:  data.A,
-		P:  data.P,
-	}
+	wg.Add(5)
+	go func() {
+		defer wg.Done()
+		doc.Find("h1").Each(func(i int, s *goquery.Selection) {
+			text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
+			data.H1 = append(data.H1, text)
+		})
+	}()
 
-	return jsonData
+	go func() {
+		defer wg.Done()
+		doc.Find("h2").Each(func(i int, s *goquery.Selection) {
+			text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
+			data.H2 = append(data.H2, text)
+		})
+	}()
+
+	go func() {
+		defer wg.Done()
+		doc.Find("h3").Each(func(i int, s *goquery.Selection) {
+			text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
+			data.H3 = append(data.H3, text)
+		})
+	}()
+
+	go func() {
+		defer wg.Done()
+		doc.Find("p").Each(func(i int, s *goquery.Selection) {
+			text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
+			data.P = append(data.P, text)
+		})
+	}()
+	go func() {
+		defer wg.Done()
+		doc.Find("a").Each(func(i int, s *goquery.Selection) {
+			text := strings.Replace(strings.Replace(strings.TrimSpace(s.Text()), "\n", "", -1), "\t", "", -1)
+			data.A = append(data.A, text)
+		})
+	}()
+
+	wg.Wait()
+
+	return JSONResponse(data), nil
 }
-

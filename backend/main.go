@@ -1,17 +1,24 @@
 package main
 
 import (
-
 	"log"
-	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 
 	"github.com/isofinly/coconut/util"
-	)
+)
+
+import "github.com/goccy/go-json"
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		// Prefork:     true,
+		JSONEncoder: json.Marshal,
+		JSONDecoder: json.Unmarshal,
+	})
+
+	app.Use(logger.New())
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
@@ -27,7 +34,11 @@ func main() {
 			return err
 		}
 
-		result := util.ExampleScrape(reqBody.URL)
+		result, err := util.ExampleScrape(reqBody.URL)
+		if err != nil {
+			log.Println(err)
+			return c.SendStatus(500)
+		}
 
 		jsonResponse, err := json.Marshal(result)
 		if err != nil {
