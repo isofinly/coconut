@@ -143,5 +143,7 @@ def extract_metadata_batch_handler():
         return jsonify(metadata_list)
     
 
+# TODO: Add a trend_finder handler, semantic_and_closest_match method from scrapper 
+
 if __name__ == "__main__":
     app.run(port=3030, host='0.0.0.0')

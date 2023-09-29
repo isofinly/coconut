@@ -62,6 +62,8 @@ export default function Home() {
     return domain;
   }
 
+  // TODO: Implement loading of json's on call of openCard 
+
   const [interestPage, setInterestPage] = React.useState(1); // Changed 'page' to 'interestPage'
   const rowsPerPage = 15;
   const [interest, setInterest] = React.useState([]); // Changed 'users' to 'interest'

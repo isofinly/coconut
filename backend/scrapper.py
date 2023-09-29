@@ -188,7 +188,7 @@ def extract_metadata(url: str) -> Dict[str, Optional[str]]:
     return metadata
 
 
-
+# TODO: Implement async, parallel processing and refine the function
 
 def semantic_and_closest_match(array1: List[str], array2: List[str]) -> Tuple[str, str]:
     """
