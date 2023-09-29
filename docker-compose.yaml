@@ -5,8 +5,9 @@ services:
     ports:
       - '3000:3000'
     command: ['bun', 'run', 'dev']
-  # golang-backend:
-  #   build: ./backend
-  #   container_name: golang-backend
-  #   ports:
-  #     - '3030:3030'
+  scrapper-api:
+    build: ./backend
+    container_name: backend-api
+    ports:
+      - '3030:3030'
+    # command: ['python', 'app']
