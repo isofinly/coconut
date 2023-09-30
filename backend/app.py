@@ -3,15 +3,14 @@ from typing import Any, Dict, List
 import concurrent.futures
 
 from scrapper import extract_keywords_multilang, extract_metadata, extract_paragraphs, get_domain, get_site_pages, load_models
+from trend_finder import get_interest_over_time, get_related_queries, get_related_topics
 
 app = Flask("scrapper-api")
 
 # Load language models when the app starts
 load_models()
 
-@app.get('/')
-def index() -> str:
-    return 'Hello, World!'
+
 @app.route('/extract_keywords', methods=['POST'])
 def extract_keywords() -> Dict[str, Any]:
     """
@@ -110,6 +109,7 @@ def extract_metadata_handler() -> Dict[str, Any]:
     metadata: Dict[str, Any] = extract_metadata(url)
     return jsonify(metadata)
 
+
 @app.route('/extract_metadata_batch', methods=['POST'])
 def extract_metadata_batch_handler():
     if request.method == 'POST':
@@ -128,7 +128,8 @@ def extract_metadata_batch_handler():
         # Use ThreadPoolExecutor to execute the extraction concurrently
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # Submit tasks for each URL
-            future_to_url = {executor.submit(extract_metadata_for_url, url): url for url in page_urls}
+            future_to_url = {executor.submit(
+                extract_metadata_for_url, url): url for url in page_urls}
 
             # Collect results as they complete
             for future in concurrent.futures.as_completed(future_to_url):
@@ -141,9 +142,69 @@ def extract_metadata_batch_handler():
                     print(f"Error processing URL {url}: {str(e)}")
 
         return jsonify(metadata_list)
-    
 
-# TODO: Add a trend_finder handler, semantic_and_closest_match method from scrapper 
+
+@app.route('/get_interest_over_time', methods=['POST'])
+def get_interest_over_time_route() -> Dict[str, Any]:
+    """
+    Handler for the '/get_interest_over_time' route.
+    Expects a JSON payload with a 'query' field.
+    Returns a JSON response with the 'interest_over_time' data.
+
+    :return: A dictionary containing the 'interest_over_time' data.
+    :rtype: dict
+    """
+    data: Dict[str, Any] = request.json
+    query: List[str] = data.get('query', [])
+
+    if not query:
+        return jsonify({'error': 'Query parameter is missing'}), 400
+
+    interest_over_time_data: List[dict[str, Any]] = get_interest_over_time(query)
+    return jsonify({'interest_over_time': interest_over_time_data})
+
+
+@app.route('/get_related_topics', methods=['POST'])
+def get_related_topics_route() -> Dict[str, Any]:
+    """
+    Handle POST request to '/get_related_topics' endpoint.
+
+    Args:
+        None
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the related topics data.
+    """
+    data: Dict[str, Any] = request.json
+    query: List[str] = data.get('query', [])
+
+    if not query:
+        return jsonify({'error': 'Query parameter is missing'}), 400
+
+    related_topics_data: List[dict[str, Any]] = get_related_topics(query)
+    return jsonify({'related_topics': related_topics_data})
+
+
+@app.route('/get_related_queries', methods=['POST'])
+def get_related_queries_route() -> Dict[str, List[str]]:
+    """
+    Retrieves related queries based on the given query.
+
+    Args:
+        query (List[str]): The query to retrieve related queries for.
+
+    Returns:
+        Dict[str, List[str]]: A dictionary containing the related queries.
+    """
+    data: Dict[str, List[str]] = request.json
+    query: List[str] = data.get('query', [])
+
+    if not query:
+        return jsonify({'error': 'Query parameter is missing'}), 400
+
+    related_queries_data: List[dict[str, Any]] = get_related_queries(query)
+    return jsonify({'related_queries': related_queries_data})
+
 
 if __name__ == "__main__":
     app.run(port=3030, host='0.0.0.0')

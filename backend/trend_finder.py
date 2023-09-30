@@ -1,10 +1,12 @@
 from pytrends.request import TrendReq
-from typing import List, Dict, Any
-from datetime import datetime
+from typing import Any, List
 import json
+import pytrends
 
 pytrends = TrendReq()
-def get_interest_over_time(query: List[str]) -> str:
+
+
+def get_interest_over_time(query: List[str]) -> dict[str, Any]:
     """
     Get the interest over time for a given query and format it as JSON.
 
@@ -27,9 +29,8 @@ def get_interest_over_time(query: List[str]) -> str:
         for idx, (timestamp, interest) in enumerate(interest_for_query.items())
     ]
 
-    formatted_json = json.dumps(formatted_data, indent=4, ensure_ascii=False)
+    return formatted_data
 
-    return formatted_json
 
 def get_related_topics(query: List[str]) -> str:
     """
@@ -56,9 +57,9 @@ def get_related_topics(query: List[str]) -> str:
             "interest": int(row['value'])
         }
         formatted_data.append(topic_dict)
-    
-    formatted_json = json.dumps(formatted_data, indent=4, ensure_ascii=False)
-    return formatted_json
+
+    return formatted_data
+
 
 def get_related_queries(query: List[str]) -> str:
     """
@@ -71,9 +72,9 @@ def get_related_queries(query: List[str]) -> str:
         str: A formatted JSON string containing the related queries.
     """
     pytrends.build_payload(kw_list=query)
-    
+
     related_queries = pytrends.related_queries()
-    
+
     formatted_data = []
     for index, row in related_queries[query[0]]['top'].iterrows():
         query_dict = {
@@ -82,5 +83,4 @@ def get_related_queries(query: List[str]) -> str:
             "interest": int(row['value'])
         }
         formatted_data.append(query_dict)
-    formatted_data = json.dumps(formatted_data, indent=4, ensure_ascii=False)
     return formatted_data
