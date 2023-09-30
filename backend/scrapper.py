@@ -7,6 +7,11 @@ from typing import Dict, List, Optional, Tuple, Set
 import concurrent.futures
 import fake_useragent
 
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
+import undetected_chromedriver as uc
 
 # Disable insecure request warning
 import urllib3
@@ -202,9 +207,24 @@ def extract_metadata(url: str) -> Dict[str, Optional[str]]:
     return metadata
 
 
+def parse_with_selenium(url):
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+
+
+    driver = uc.Chrome(headless=True,use_subprocess=False)
+
+
+    _url = 'https://dzen.ru'  # Replace with the URL of the webpage you want to parse
+    driver.get(_url)
+    page_title = driver.title
+    print(f"Page Title: {page_title}")
+    driver.quit()
+
 if __name__ == "__main__":
+    load_models()
     site_url = "https://stackoverflow.com/"
-    metadata = extract_metadata(site_url)
-    print("Title:", metadata.get('title'))
-    print("Description:", metadata.get('description'))
-    print("Keywords:", metadata.get('keywords'))
+    # metadata = extract_metadata(site_url)
+    # print("Title:", metadata.get('title'))
+    # print("Description:", metadata.get('description'))
+    # print("Keywords:", metadata.get('keywords'))
+    parse_with_selenium(site_url)
