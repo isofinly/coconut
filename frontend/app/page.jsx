@@ -18,8 +18,6 @@ import {
   Tab,
   Tabs,
   useDisclosure,
-} from "@nextui-org/react";
-import {
   Table,
   TableHeader,
   TableColumn,
@@ -30,6 +28,8 @@ import {
   getKeyValue,
 } from "@nextui-org/react";
 
+import PublishIcon from "@mui/icons-material/Publish";
+import GetAppIcon from "@mui/icons-material/GetApp";
 import axios from "axios";
 import React, { Key } from "react";
 import { useState } from "react";
@@ -57,36 +57,30 @@ export default function Home() {
   };
 
   function getDomainName(url) {
-    let domain = url.replace(/^(https?:\/\/)?(www\.)?/i, '');
-    domain = domain.split('/')[0];
+    let domain = url.replace(/^(https?:\/\/)?(www\.)?/i, "");
+    domain = domain.split("/")[0];
     return domain;
   }
-
-  // TODO: Implement loading of json's on call of openCard 
 
   const [interestPage, setInterestPage] = React.useState(1); // Changed 'page' to 'interestPage'
   const rowsPerPage = 15;
   const [interest, setInterest] = React.useState([]); // Changed 'users' to 'interest'
 
-  React.useEffect(() => {
-    async function fetchInterest() {
-      try {
-        const response = await fetch(
-          "http://localhost:3000/interest_over_time.json"
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setInterest(data);
-        } else {
-          // Handle error if the API request fails
-        }
-      } catch (error) {
-        // Handle network or other errors
+  async function fetchInterest() {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/interest_over_time.json"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setInterest(data);
+      } else {
+        // Handle error if the API request fails
       }
+    } catch (error) {
+      // Handle network or other errors
     }
-
-    fetchInterest();
-  }, []);
+  }
 
   const interest_pages = Math.ceil(interest.length / rowsPerPage);
 
@@ -101,25 +95,21 @@ export default function Home() {
   const queriesPerPage = 15;
   const [relatedQueries, setRelatedQueries] = React.useState([]);
 
-  React.useEffect(() => {
-    async function fetchRelatedQueries() {
-      try {
-        const response = await fetch(
-          "http://localhost:3000/related_queries.json"
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setRelatedQueries(data);
-        } else {
-          // Handle error if the API request fails
-        }
-      } catch (error) {
-        // Handle network or other errors
+  async function fetchRelatedQueries() {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/related_queries.json"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setRelatedQueries(data);
+      } else {
+        // Handle error if the API request fails
       }
+    } catch (error) {
+      // Handle network or other errors
     }
-
-    fetchRelatedQueries();
-  }, []);
+  }
 
   const relatedQueriesPages = Math.ceil(relatedQueries.length / queriesPerPage);
 
@@ -134,25 +124,19 @@ export default function Home() {
   const topicsPerPage = 15;
   const [relatedTopics, setRelatedTopics] = React.useState([]);
 
-  React.useEffect(() => {
-    async function fetchRelatedTopics() {
-      try {
-        const response = await fetch(
-          "http://localhost:3000/related_topics.json"
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setRelatedTopics(data);
-        } else {
-          // Handle error if the API request fails
-        }
-      } catch (error) {
-        // Handle network or other errors
+  async function fetchRelatedTopics() {
+    try {
+      const response = await fetch("http://localhost:3000/related_topics.json");
+      if (response.ok) {
+        const data = await response.json();
+        setRelatedTopics(data);
+      } else {
+        // Handle error if the API request fails
       }
+    } catch (error) {
+      // Handle network or other errors
     }
-
-    fetchRelatedTopics();
-  }, []);
+  }
 
   const relatedTopicsPages = Math.ceil(relatedTopics.length / topicsPerPage);
 
@@ -162,6 +146,32 @@ export default function Home() {
 
     return relatedTopics.slice(start, end);
   }, [topicsPage, relatedTopics]);
+
+  function fetchData() {
+    onCardOpen();
+    fetchRelatedTopics();
+    fetchRelatedQueries();
+    fetchInterest();
+  }
+
+  function combineJSONsAndDownload(filename, ...jsons) {
+    const combined = jsons.map((json, index) => ({ [index]: json }));
+    const combinedJSON = [combined];
+  
+    const jsonBlob = new Blob([JSON.stringify(combinedJSON)], { type: 'application/json' });
+    const url = URL.createObjectURL(jsonBlob);
+  
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = filename;
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <main className="flex min-h-screen flex-col p-24">
@@ -215,13 +225,16 @@ export default function Home() {
           <Divider className="my-4" />
           <CardFooter>
             <ButtonGroup>
-              <Button color="primary" onPress={() => (window.location.href = `https://${inputUrl}`)}>
+              <Button
+                color="primary"
+                onPress={() => (inputUrl && (window.location.href = `https://${inputUrl}`))}
+              >
                 Перейти
               </Button>
               <Button
                 variant="flat"
                 color="primary"
-                onPress={() => onCardOpen()}
+                onPress={() => fetchData()}
               >
                 Детальная информация
               </Button>
@@ -238,7 +251,9 @@ export default function Home() {
           <ModalContent>
             {(onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">Cards</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">
+                  Информация Google Trends
+                </ModalHeader>
                 <ModalBody>
                   <Tabs
                     fullWidth
@@ -257,7 +272,7 @@ export default function Home() {
                                 isCompact
                                 showControls
                                 showShadow
-                                color="secondary"
+                                color="primary"
                                 page={interestPage}
                                 total={interest_pages}
                                 onChange={(page) => setInterestPage(page)}
@@ -296,7 +311,7 @@ export default function Home() {
                                 isCompact
                                 showControls
                                 showShadow
-                                color="secondary"
+                                color="primary"
                                 page={relatedQueriesPage}
                                 total={relatedQueriesPages}
                                 onChange={(page) => setRelatedQueriesPage(page)}
@@ -335,7 +350,7 @@ export default function Home() {
                                 isCompact
                                 showControls
                                 showShadow
-                                color="secondary"
+                                color="primary"
                                 page={topicsPage}
                                 total={relatedTopicsPages}
                                 onChange={(page) => setTopicsPage(page)}
@@ -370,14 +385,18 @@ export default function Home() {
                 <ModalFooter>
                   <ButtonGroup>
                     <Button color="danger" variant="flat" onPress={onClose}>
-                      Close
+                      Закрыть
                     </Button>
                     <Button
-                      color="default"
-                      variant="bordered"
-                      onPress={onClose}
+                      color="primary"
+                      endContent={<GetAppIcon />}
+                      onPress={ () => (combineJSONsAndDownload('combined.json',
+                        interest,
+                        relatedQueries,
+                        relatedTopics
+                      ))}
                     >
-                      Справка
+                      Экспорт
                     </Button>
                   </ButtonGroup>
                 </ModalFooter>

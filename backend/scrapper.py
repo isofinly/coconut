@@ -188,57 +188,6 @@ def extract_metadata(url: str) -> Dict[str, Optional[str]]:
     return metadata
 
 
-# TODO: Implement async, parallel processing and refine the function
-
-def semantic_and_closest_match(array1: List[str], array2: List[str]) -> Tuple[str, str]:
-    """
-    Calculates the semantic and closest match between two arrays of strings.
-
-    Args:
-        array1 (List[str]): The first array of strings.
-        array2 (List[str]): The second array of strings.
-
-    Returns:
-        Tuple[str, str, float]: A tuple containing the best match words from array1 and array2, 
-        along with their combined score.
-    """
-
-    def semantic_similarity(word1: str, word2: str) -> float:
-        synsets1: List[Synset] = wordnet.synsets(word1)
-        synsets2: List[Synset] = wordnet.synsets(word2)
-
-        max_similarity: float = 0.0
-
-        for synset1 in synsets1:
-            for synset2 in synsets2:
-                similarity: float = synset1.wup_similarity(synset2)
-                if similarity is not None and similarity > max_similarity:
-                    max_similarity = similarity
-
-        return max_similarity
-
-    semantic_similarity_dict: dict = {}
-    for word1 in array1:
-        for word2 in array2:
-            semantic_similarity_dict[(word1, word2)] = semantic_similarity(word1, word2)
-
-    best_match: Tuple[str, str] = ("", "")
-    best_score: float = -1
-
-    for word1 in array1:
-        for word2 in array2:
-            semantic_score: float = semantic_similarity_dict[(word1, word2)]
-            levenshtein_score: int = Levenshtein.distance(word1, word2)
-
-            # You can adjust the weights for semantic and Levenshtein scores as needed
-            combined_score: float = 0.7 * semantic_score + 0.3 * (1 / (1 + levenshtein_score))
-
-            if combined_score > best_score:
-                best_score = combined_score
-                best_match = (word1, word2)
-
-    return best_match[0], best_match[1]
-
 
 
 # if __name__ == "__main__":
