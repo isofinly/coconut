@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, Response
 from typing import Any, Dict, List
 import concurrent.futures
 
+import requests
+
 from scrapper import extract_keywords_multilang, extract_metadata, extract_paragraphs, get_domain, get_site_pages, load_models
 from trend_finder import get_interest_over_time, get_related_queries, get_related_topics
 
@@ -11,6 +13,25 @@ app = Flask("scrapper-api")
 load_models()
 
 
+
+@app.route('/get_domain', methods=['POST'])
+def get_domain_handler() -> str:
+    """
+    Handle the POST request to get the domain from the base URL.
+
+    Args:
+        None
+
+    Returns:
+        str: The domain extracted from the base URL.
+    """
+    data = request.json
+    base_url: str = data.get('url', '')
+    domain: str = get_domain(base_url)
+    return jsonify({'domain': domain})
+
+# TODO: Make request to nodejs api if no response
+# Make a similar handler in node
 @app.route('/extract_keywords', methods=['POST'])
 def extract_keywords() -> Dict[str, Any]:
     """
@@ -40,24 +61,8 @@ def extract_keywords() -> Dict[str, Any]:
     }
     return jsonify(result)
 
-
-@app.route('/get_domain', methods=['POST'])
-def get_domain_handler() -> str:
-    """
-    Handle the POST request to get the domain from the base URL.
-
-    Args:
-        None
-
-    Returns:
-        str: The domain extracted from the base URL.
-    """
-    data = request.json
-    base_url: str = data.get('url', '')
-    domain: str = get_domain(base_url)
-    return jsonify({'domain': domain})
-
-
+# TODO: Make request to nodejs api if no response
+# Make a similar handler in node
 @app.route('/get_site_pages', methods=['POST'])
 def get_site_pages_handler() -> jsonify:
     """
@@ -75,7 +80,8 @@ def get_site_pages_handler() -> jsonify:
     page_urls: List[str] = list(get_site_pages(site_url))
     return jsonify({'page_urls': page_urls})
 
-
+# TODO: Make request to nodejs api if no response
+# Make a similar handler in node
 @app.route('/extract_paragraphs', methods=['POST'])
 def extract_paragraphs_handler() -> Response:
     """
@@ -92,7 +98,7 @@ def extract_paragraphs_handler() -> Response:
     paragraphs: List[str] = extract_paragraphs(url)
     return jsonify({'paragraphs': paragraphs})
 
-
+# TODO: Make request to nodejs api if no response
 @app.route('/extract_metadata', methods=['POST'])
 def extract_metadata_handler() -> Dict[str, Any]:
     """
@@ -109,7 +115,7 @@ def extract_metadata_handler() -> Dict[str, Any]:
     metadata: Dict[str, Any] = extract_metadata(url)
     return jsonify(metadata)
 
-
+# TODO: Make request to nodejs api if no response
 @app.route('/extract_metadata_batch', methods=['POST'])
 def extract_metadata_batch_handler():
     if request.method == 'POST':
@@ -205,6 +211,14 @@ def get_related_queries_route() -> Dict[str, List[str]]:
     related_queries_data: List[dict[str, Any]] = get_related_queries(query)
     return jsonify({'related_queries': related_queries_data})
 
+def callNodejsAPI(url):
+    response = requests.post("http://localhost:3050/extract_data", json={"url": [url]})
+    return response
+
+@app.route('/get_theme', methods=['POST'])
+def get_theme():
+    data = request.json
+    
 
 if __name__ == "__main__":
     app.run(port=3030, host='0.0.0.0')

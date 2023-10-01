@@ -1,0 +1,72 @@
+annotated-types==0.5.0
+attrs==23.1.0
+beautifulsoup4==4.12.2
+blinker==1.6.2
+blis==0.7.11
+catalogue==2.0.10
+certifi==2023.7.22
+charset-normalizer==3.2.0
+click==8.1.7
+confection==0.1.3
+cymem==2.0.8
+DAWG-Python==0.7.2
+de-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-3.6.0/de_core_news_sm-3.6.0-py3-none-any.whl#sha256=cdded59f89eacf348c30a79f9a2485ab21e154ef300cc02c7ebe87dea149c457
+docopt-ng==0.9.0
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.6.0/en_core_web_sm-3.6.0-py3-none-any.whl#sha256=83276fc78a70045627144786b52e1f2728ad5e29e5e43916ec37ea9c26a11212
+fake-useragent==1.2.1
+Flask==2.3.3
+fr-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.6.0/fr_core_news_sm-3.6.0-py3-none-any.whl#sha256=88ba4254539a7efb51d5e0c5b6c4ea5b350542752b634088274c1b97d8c8b8ee
+h11==0.14.0
+idna==3.4
+itsdangerous==2.1.2
+Jinja2==3.1.2
+joblib==1.3.2
+langcodes==3.3.0
+langdetect==1.0.9
+Levenshtein==0.22.0
+lxml==4.9.3
+MarkupSafe==2.1.3
+murmurhash==1.0.10
+nltk==3.8.1
+numpy==1.26.0
+outcome==1.2.0
+packaging==23.1
+pandas==2.1.1
+pathy==0.10.2
+preshed==3.0.9
+pydantic==2.4.2
+pydantic_core==2.10.1
+pymorphy3==1.2.1
+pymorphy3-dicts-ru==2.4.417150.4580142
+pymorphy3-dicts-uk==2.4.1.1.1663094765
+PySocks==1.7.1
+python-dateutil==2.8.2
+pytrends==4.9.2
+pytz==2023.3.post1
+rapidfuzz==3.3.1
+regex==2023.8.8
+requests==2.31.0
+ro-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/ro_core_news_sm-3.6.0/ro_core_news_sm-3.6.0-py3-none-any.whl#sha256=c50bc556c3c2f6770e8488037f70748cf6a617781d1c35bf27065708261d54a6
+ru-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.6.0/ru_core_news_sm-3.6.0-py3-none-any.whl#sha256=9d11147ab9380106f61bd0348443d714008be174a675d85de44c80dee4a74307
+six==1.16.0
+smart-open==6.4.0
+sniffio==1.3.0
+sortedcontainers==2.4.0
+soupsieve==2.5
+spacy==3.6.1
+spacy-legacy==3.0.12
+spacy-loggers==1.0.5
+srsly==2.4.8
+thinc==8.1.12
+tqdm==4.66.1
+trio==0.22.2
+trio-websocket==0.11.1
+typer==0.9.0
+typing_extensions==4.8.0
+tzdata==2023.3
+uk-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/uk_core_news_sm-3.6.0/uk_core_news_sm-3.6.0-py3-none-any.whl#sha256=0f071d08ba6baaff1d42e8ae6f4991ae371c2873a5f46d4176e1c73fea073f8f
+urllib3==2.0.5
+wasabi==1.1.2
+websockets==11.0.3
+Werkzeug==2.3.7
+wsproto==1.2.0

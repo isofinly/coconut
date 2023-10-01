@@ -1,13 +1,29 @@
 services:
+
   nextjs-docker:
     build: ./frontend
     container_name: nextjs-docker
     ports:
       - '3000:3000'
     command: ['bun', 'run', 'dev']
-  scrapper-api:
-    build: ./backend
-    container_name: backend-api
+
+  node-api:
+    build: ./backend/node
+    container_name: node-api
+    ports:
+      - '3050:3050'
+    networks:
+      - backend
+
+  python-api:
+    build: ./backend/python
+    container_name: python-api
     ports:
       - '3030:3030'
-    # command: ['python', 'app']
+    networks:
+      - backend
+    
+  
+  networks:
+    backend:
+      driver: bridge
