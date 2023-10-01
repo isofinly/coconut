@@ -44,13 +44,18 @@ export default function Home() {
   const [selected, setSelected] = useState(0);
   const [inputUrl, setInputUrl] = useState("");
   const [data, setData] = useState(null); // Specify the type explicitly
+  const array1 = [];
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:3030/", {
+      const response = await axios.get("http://localhost:5000/", {
         url: "https://" + getDomainName(inputUrl),
       });
-      setData(response.data);
+      // setData(response.data);
+      if (response){
+        setData(response.data)
+      }
+      array1.push(data)
     } catch (error) {
       setData(null);
     }
@@ -66,14 +71,15 @@ export default function Home() {
   const rowsPerPage = 15;
   const [interest, setInterest] = React.useState([]); // Changed 'users' to 'interest'
 
+
   async function fetchInterest() {
     try {
-      const response = await fetch(
-        "http://localhost:3000/interest_over_time.json"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setInterest(data);
+      const response = await axios.post("http://localhost:3030/get_interest_over_time", {
+        query: array1
+      });
+      if (response) {
+        const data = await response.data
+        setInterest(data?.interest_over_time);
       } else {
         // Handle error if the API request fails
       }
@@ -97,12 +103,12 @@ export default function Home() {
 
   async function fetchRelatedQueries() {
     try {
-      const response = await fetch(
-        "http://localhost:3000/related_queries.json"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setRelatedQueries(data);
+      const response = await axios.post("http://localhost:3030/get_related_queries", {
+        query: array1
+      });
+      if (response) {
+        const data = await response.data
+        setRelatedQueries(data?.related_queries);
       } else {
         // Handle error if the API request fails
       }
@@ -126,10 +132,12 @@ export default function Home() {
 
   async function fetchRelatedTopics() {
     try {
-      const response = await fetch("http://localhost:3000/related_topics.json");
-      if (response.ok) {
-        const data = await response.json();
-        setRelatedTopics(data);
+      const response = await axios.post("http://localhost:3030/get_related_topics", {
+        query: array1
+      });
+      if (response) {
+        const data = await response.data
+        setRelatedTopics(data?.related_topics);
       } else {
         // Handle error if the API request fails
       }

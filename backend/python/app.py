@@ -9,11 +9,16 @@ from trend_finder import get_interest_over_time, get_related_queries, get_relate
 
 app = Flask("scrapper-api")
 
+from flask_cors import CORS, cross_origin
+app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 # Load language models when the app starts
 load_models()
 
 
-
+@cross_origin()
 @app.route('/get_domain', methods=['POST'])
 def get_domain_handler() -> str:
     """
@@ -32,6 +37,7 @@ def get_domain_handler() -> str:
 
 # TODO: Make request to nodejs api if no response
 # Make a similar handler in node
+@cross_origin()
 @app.route('/extract_keywords', methods=['POST'])
 def extract_keywords() -> Dict[str, Any]:
     """
@@ -63,6 +69,7 @@ def extract_keywords() -> Dict[str, Any]:
 
 # TODO: Make request to nodejs api if no response
 # Make a similar handler in node
+@cross_origin()
 @app.route('/get_site_pages', methods=['POST'])
 def get_site_pages_handler() -> jsonify:
     """
@@ -82,6 +89,7 @@ def get_site_pages_handler() -> jsonify:
 
 # TODO: Make request to nodejs api if no response
 # Make a similar handler in node
+@cross_origin()
 @app.route('/extract_paragraphs', methods=['POST'])
 def extract_paragraphs_handler() -> Response:
     """
@@ -99,6 +107,7 @@ def extract_paragraphs_handler() -> Response:
     return jsonify({'paragraphs': paragraphs})
 
 # TODO: Make request to nodejs api if no response
+@cross_origin()
 @app.route('/extract_metadata', methods=['POST'])
 def extract_metadata_handler() -> Dict[str, Any]:
     """
@@ -116,6 +125,7 @@ def extract_metadata_handler() -> Dict[str, Any]:
     return jsonify(metadata)
 
 # TODO: Make request to nodejs api if no response
+@cross_origin()
 @app.route('/extract_metadata_batch', methods=['POST'])
 def extract_metadata_batch_handler():
     if request.method == 'POST':
@@ -149,7 +159,7 @@ def extract_metadata_batch_handler():
 
         return jsonify(metadata_list)
 
-
+@cross_origin()
 @app.route('/get_interest_over_time', methods=['POST'])
 def get_interest_over_time_route() -> Dict[str, Any]:
     """
@@ -169,7 +179,7 @@ def get_interest_over_time_route() -> Dict[str, Any]:
     interest_over_time_data: List[dict[str, Any]] = get_interest_over_time(query)
     return jsonify({'interest_over_time': interest_over_time_data})
 
-
+@cross_origin()
 @app.route('/get_related_topics', methods=['POST'])
 def get_related_topics_route() -> Dict[str, Any]:
     """
@@ -190,7 +200,7 @@ def get_related_topics_route() -> Dict[str, Any]:
     related_topics_data: List[dict[str, Any]] = get_related_topics(query)
     return jsonify({'related_topics': related_topics_data})
 
-
+@cross_origin()
 @app.route('/get_related_queries', methods=['POST'])
 def get_related_queries_route() -> Dict[str, List[str]]:
     """
@@ -215,6 +225,7 @@ def callNodejsAPI(url):
     response = requests.post("http://localhost:3050/extract_data", json={"url": [url]})
     return response
 
+@cross_origin()
 @app.route('/get_theme', methods=['POST'])
 def get_theme():
     data = request.json

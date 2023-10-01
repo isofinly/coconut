@@ -6,6 +6,7 @@ Before you begin, ensure you have the following software installed on your syste
 -   Docker: [Install Docker](https://docs.docker.com/get-docker/)
 -   Docker Compose: [Install Docker Compose](https://docs.docker.com/compose/install/)
 -   Google Colab: [Get started](https://colab.research.google.com/)
+-   Download trained BERT: [Link](https://drive.google.com/drive/folders/1zlUUJyxtWpgpTB9pEeEXJRmUS2zYC8iI?usp=sharing)
 
 ## Getting Started
 
@@ -42,6 +43,7 @@ You should see output indicating that each service is running, and they will be 
 -   Next.js frontend: [http://localhost:3000](http://localhost:3000)
 -   Node.js API: [http://localhost:3050](http://localhost:3050)
 -   Python API: [http://localhost:3030](http://localhost:3030)
+- Ai pyTorch API: [http://localhost:3033](http://localhost:3033)
 
 To stop the services, press `Ctrl + C` in the terminal where they are running.
 
@@ -49,15 +51,15 @@ To stop the services, press `Ctrl + C` in the terminal where they are running.
 
 Here is a breakdown of the services and their configurations defined in the `docker-compose.yml` file:
 
-### nextjs web ui
+### Nextjs web ui
 
 -   Build context: `./frontend`
 -   Container name: `nextjs-docker`
 -   Exposed port: `3000`
 -   Command to run: `bun run dev`
 
-### node-api
--   Framework: `Express`
+### Node-api
+-	 Framework: `Express`
 -   Build context: `./backend/node`
 -   Container name: `node-api`
 -   Exposed port: `3050`
@@ -67,8 +69,8 @@ Here is a breakdown of the services and their configurations defined in the `doc
 	  - Allowed methods: `POST`
 	  - Request body: ` json {"urls": [""]}`
 
-### python-api
--   Framework: `Flask`
+### Python-api
+
 -   Build context: `./backend/python`
 -   Container name: `python-api`
 -   Exposed port: `3030`
@@ -104,8 +106,16 @@ Here is a breakdown of the services and their configurations defined in the `doc
 	- `/get_domain`
 		- Allowed methods: `POST`
 		- Request body: ` {"": ""} `
-
-### networks
+### Python-ai-api
+-   Build context: `./backend/ai`
+-   Container name: `python-ai-api`
+-   Exposed port: `3033`
+-   Network: `backend` (bridge network)
+-   Routes: 
+	- `/`
+		- Allowed methods: `POST`
+		- Request body: `{"text":"<your_data>"}`
+### Networks
 
 -   `backend` network:
     -   Driver: `bridge`
