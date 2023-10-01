@@ -57,7 +57,7 @@ Here is a breakdown of the services and their configurations defined in the `doc
 -   Command to run: `bun run dev`
 
 ### node-api
--	 Framework: `Express`
+-   Framework: `Express`
 -   Build context: `./backend/node`
 -   Container name: `node-api`
 -   Exposed port: `3050`
@@ -68,7 +68,7 @@ Here is a breakdown of the services and their configurations defined in the `doc
 	  - Request body: ` json {"urls": [""]}`
 
 ### python-api
-
+-   Framework: `Flask`
 -   Build context: `./backend/python`
 -   Container name: `python-api`
 -   Exposed port: `3030`
