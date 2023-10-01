@@ -5,6 +5,7 @@ services:
     container_name: nextjs-docker
     ports:
       - '3000:3000'
+    restart: unless-stopped
     command: ['bun', 'run', 'dev']
 
   node-api:
@@ -12,6 +13,7 @@ services:
     container_name: node-api
     ports:
       - '3050:3050'
+    restart: unless-stopped
     networks:
       - backend
 
@@ -20,10 +22,10 @@ services:
     container_name: python-api
     ports:
       - '3030:3030'
+    restart: unless-stopped
     networks:
       - backend
     
-  
   networks:
     backend:
       driver: bridge
